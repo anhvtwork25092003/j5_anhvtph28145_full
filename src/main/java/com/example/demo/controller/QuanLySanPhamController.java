@@ -33,15 +33,76 @@ public class QuanLySanPhamController {
 
     // trang chu
     @GetMapping("/view-all")
-    public String getAllProduct(Model model,
-                                @RequestParam(defaultValue = "1") int page // mac dinh hien thi tu trang so 1
-
+    public String getAllProduct(@RequestParam(required = false) String keyword,
+                                @RequestParam(required = false) String priceRange,
+                                @RequestParam(defaultValue = "1") int page,
+                                Model model
     ) {
-
+        //         cat lai cuoi range de lay min max
+        // phan trang
+        if (page < 1) {
+            page = 1;
+        }
         Page<DaQuy> pageSanPham;
         Pageable pageable = PageRequest.of(page - 1, 5);
-        if (page < 1) page = 1;
-        model.addAttribute("pageDaQuy", this.daQuyService.getProducts(pageable));
+
+
+        // hien thi tat ca
+        if (keyword == null && priceRange == null) {
+            model.addAttribute("pageDaQuy", this.daQuyService.getProducts(pageable));
+        } else if (keyword != null && priceRange != null) {
+            String[] range = priceRange.split(",");
+            String minPrice;
+            String maxPrice;
+
+            if (range.length == 1) {
+                minPrice = range[0];
+                maxPrice = "99999999999999999";
+            } else {
+                minPrice = range[0];
+                maxPrice = range[1];
+            }
+
+            if (minPrice.isEmpty()) {
+                minPrice = "0";
+            }
+
+            if (maxPrice.isEmpty()) {
+                maxPrice = "99999999999999999";
+            }
+//             tim kiem theo ten va khoang gia
+            Page<DaQuy> ketQua =
+                    daQuyService.timKiemTheoTenVaKhoangGia(pageable, keyword, BigDecimal.valueOf(Long.parseLong(minPrice)), BigDecimal.valueOf(Long.parseLong(maxPrice)));
+            model.addAttribute("pageDaQuy", ketQua);
+        } else if (keyword != null && priceRange == null) {
+//             tim kiem theo ten
+            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoTen(pageable, keyword));
+        } else if (keyword == null && priceRange != null) {
+            String[] range = priceRange.split(",");
+            String minPrice;
+            String maxPrice;
+
+            if (range.length == 1) {
+                minPrice = range[0];
+                maxPrice = "99999999999999999";
+            } else {
+                minPrice = range[0];
+                maxPrice = range[1];
+            }
+
+            if (minPrice.isEmpty()) {
+                minPrice = "0";
+            }
+
+            if (maxPrice.isEmpty()) {
+                maxPrice = "99999999999999999";
+            }
+
+//             tim kiem theo khoang gia
+            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoKhoangGia(pageable, BigDecimal.valueOf(Long.parseLong(minPrice)), BigDecimal.valueOf(Long.parseLong(maxPrice))));
+
+        }
+
         return "QuanLyDaQuy";
     }
 
@@ -50,6 +111,37 @@ public class QuanLySanPhamController {
     public String detailProduct(Model model, @PathVariable("id") Integer id) {
         model.addAttribute("product", this.daQuyService.getOneProduct(Integer.valueOf(id)));
         return "QuanLyDaQuy";
+    }
+
+    //    tim kiem
+    @GetMapping("/tim-kiem")
+    public String timKiem(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String priceRange,
+            @RequestParam(defaultValue = "1") int page,
+            Model model
+    ) {
+        //         cat lai cuoi range de lay min max
+        String[] range = priceRange.split(",");
+        //             phan trang
+        Pageable pageable = PageRequest.of(page - 1, 5);
+        if (page < 1) page = 1;
+        if (keyword != null && priceRange != null) {
+            // Gọi hàm tìm kiếm theo tên và khoảng giá
+            Page<DaQuy> ketQua =
+                    daQuyService.timKiemTheoTenVaKhoangGia(pageable, keyword, BigDecimal.valueOf(Long.parseLong(range[0])), BigDecimal.valueOf(Long.parseLong(range[1])));
+            model.addAttribute("pageDaQuy", ketQua);
+            return "QuanLyDaQuy";
+        } else if (keyword != null) {
+            // Gọi hàm tìm kiếm theo tên
+            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoTen(pageable, keyword));
+            return "QuanLyDaQuy";
+        } else if (priceRange != null) {
+            // Gọi hàm tìm kiếm theo khoảng
+            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoKhoangGia(pageable, BigDecimal.valueOf(Long.parseLong(range[0])), BigDecimal.valueOf(Long.parseLong(range[1]))));
+            return "QuanLyDaQuy";
+        }
+        return "redirect:/quan-ly/view-all";
     }
 
     // them moi san pham
@@ -68,10 +160,11 @@ public class QuanLySanPhamController {
             redirectAttributes.addFlashAttribute("blankError", "Khong de trong thong tin!");
             return "redirect:/quan-ly/view-all";
         }
+        BigDecimal giaTri = new BigDecimal(donGia);
         DaQuy daQuy = DaQuy.builder()
                 .ten(ten)
                 .soLuong(Integer.valueOf(soLuong))
-                .donGia(BigDecimal.valueOf(Double.valueOf(donGia)))
+                .donGia(giaTri)
                 .trongLuong(Float.valueOf(trongLuong))
                 .moTa(moTa)
                 .build();
@@ -99,12 +192,13 @@ public class QuanLySanPhamController {
             redirectAttributes.addFlashAttribute("blankError", "Khong de trong thong tin!");
             return "redirect:/quan-ly/view-all";
         }
+        BigDecimal giaTri = new BigDecimal(donGia);
         DaQuy daQuy = DaQuy.builder()
                 .id(Integer.valueOf(id))
                 .ma(ma)
                 .ten(ten)
                 .soLuong(Integer.valueOf(soLuong))
-                .donGia(BigDecimal.valueOf(Double.valueOf(donGia)))
+                .donGia(giaTri)
                 .trongLuong(Float.valueOf(trongLuong))
                 .moTa(moTa)
                 .build();

@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -18,6 +18,21 @@ public class DaQuyService implements IDaQuyService {
     @Override
     public Page<DaQuy> getProducts(Pageable pageable) {
         return (Page<DaQuy>) this.daQuyRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<DaQuy> timKiemTheoTenVaKhoangGia(Pageable pageable, String keyword, BigDecimal minPrice, BigDecimal maxPrice) {
+        return this.daQuyRepository.findByTenContainingIgnoreCaseAndDonGiaBetween(pageable, keyword, minPrice, maxPrice);
+    }
+
+    @Override
+    public Page<DaQuy> timKiemTheoTen(Pageable pageable, String keyword) {
+        return this.daQuyRepository.findByTenContainingIgnoreCase(pageable, keyword);
+    }
+
+    @Override
+    public Page<DaQuy> timKiemTheoKhoangGia(Pageable pageable, BigDecimal minPrice, BigDecimal maxPrice) {
+        return daQuyRepository.findByDonGiaBetween( pageable,minPrice, maxPrice);
     }
 
     @Override
