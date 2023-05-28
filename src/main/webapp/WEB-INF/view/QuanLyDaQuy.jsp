@@ -13,8 +13,34 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <!-- Bộ lọc và tìm kiếm input -->
+            <form action="/quan-ly/view-all" method="get" >
+                <!-- Bộ lọc và tìm kiếm input -->
+                <label for="searchInput" class="form-label">Tìm kiếm theo tên hoặc mã đá quý:</label>
+                <input type="text" class="form-control" id="searchInput" name="keyword" value="${param.keyword}"
+                       placeholder="Nhập tên hoặc mã đá quý">
+                <div>
+                    <label>Khoảng giá:</label>
+                    <div>
+                        <input type="radio" name="priceRange" id="range1" value="0,5000000">
+                        <label for="range1">0 - 5 triệu</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="priceRange" id="range2" value="5000000,10000000">
+                        <label for="range2">5 - 10 triệu</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="priceRange" id="range3" value="10000000,20000000">
+                        <label for="range3">10 - 20 triệu</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="priceRange" id="range4" value="20000000,">
+                        <label for="range4">Lớn hơn 20 triệu</label>
+                    </div>
+                </div>
+                <input type="submit" value="Tìm Kiếm">
+            </form>
         </div>
+
         <div class="col-md-8">
             <!-- Các nút và table-->
             <%--button add--%>
@@ -121,10 +147,12 @@
                                         <input type="text" id="ten" name="ten" required value="${lp.ten}"><br>
 
                                         <label for="soLuong">Số lượng:</label>
-                                        <input type="number" id="soLuong" name="soLuong" required value="${lp.soLuong}"><br>
+                                        <input type="number" id="soLuong" name="soLuong" required
+                                               value="${lp.soLuong}"><br>
 
                                         <label for="donGia">Đơn giá:</label>
-                                        <input type="number" id="donGia" name="donGia" step="0.1" value="${lp.donGia}"
+                                        <input type="number" id="donGia" name="donGia" step="0.1"
+                                               value="${lp.donGia}"
                                                required><br>
 
                                         <label for="trongLuong">Trọng lượng:</label>
@@ -140,7 +168,8 @@
                                 </div>
                                 <!-- Modal footer -->
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close
+                                    </button>
                                 </div>
 
                             </div>
@@ -149,18 +178,19 @@
                 </c:forEach>
             </table>
             <div>
-                <c:if test="${pageDaQuy.getNumber() + 1 > 1}">
-                    <a href="?page=${pageDaQuy.getNumber()}">
+                <c:if test="${pageDaQuy.number + 1 > 1}">
+                    <a href="?page=${pageDaQuy.number}&keyword=${param.keyword}&priceRange=${param.priceRange}">
                         Previous
                     </a>
                 </c:if>
-                <span> ${pageDaQuy.getNumber() + 1} / ${pageDaQuy.getTotalPages()} </span>
-                <c:if test="${pageDaQuy.getNumber() + 1 lt pageDaQuy.getTotalPages()}">
-                    <a href="?page=${pageDaQuy.getNumber() + 2}">
+                <span>${pageDaQuy.number + 1} / ${pageDaQuy.totalPages}</span>
+                <c:if test="${pageDaQuy.number + 1 < pageDaQuy.totalPages}">
+                    <a href="?page=${pageDaQuy.number + 2}&keyword=${param.keyword}&priceRange=${param.priceRange}">
                         Next
                     </a>
                 </c:if>
             </div>
+
 
             <%----%>
         </div>
