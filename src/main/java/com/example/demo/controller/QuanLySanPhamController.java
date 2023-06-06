@@ -26,8 +26,12 @@ public class QuanLySanPhamController {
 
     // xoa san pham
     @GetMapping("/delete/{id}")
-    public String deleteProduct(@PathVariable("id") String id) {
-        this.daQuyService.deleteProduct(Integer.parseInt(id));
+    public String deleteProduct(@PathVariable("id") String id,
+                                RedirectAttributes redirectAttributes
+    ) {
+        redirectAttributes.addFlashAttribute("blankError", this.daQuyService.deleteProduct(Integer.parseInt(id))
+        );
+
         return "redirect:/quan-ly/view-all";
     }
 
@@ -103,14 +107,15 @@ public class QuanLySanPhamController {
 
         }
 
-        return "QuanLyDaQuy";
+        return "admin/QuanLyDaQuy";
     }
 
     //     detail
     @GetMapping("/detail/{id}")
     public String detailProduct(Model model, @PathVariable("id") Integer id) {
         model.addAttribute("product", this.daQuyService.getOneProduct(Integer.valueOf(id)));
-        return "QuanLyDaQuy";
+
+        return "admin/QuanLyDaQuy";
     }
 
     //    tim kiem
@@ -131,15 +136,16 @@ public class QuanLySanPhamController {
             Page<DaQuy> ketQua =
                     daQuyService.timKiemTheoTenVaKhoangGia(pageable, keyword, BigDecimal.valueOf(Long.parseLong(range[0])), BigDecimal.valueOf(Long.parseLong(range[1])));
             model.addAttribute("pageDaQuy", ketQua);
-            return "QuanLyDaQuy";
+            return "admin/QuanLyDaQuy";
         } else if (keyword != null) {
             // Gọi hàm tìm kiếm theo tên
             model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoTen(pageable, keyword));
-            return "QuanLyDaQuy";
+            return "admin/QuanLyDaQuy";
+
         } else if (priceRange != null) {
             // Gọi hàm tìm kiếm theo khoảng
             model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoKhoangGia(pageable, BigDecimal.valueOf(Long.parseLong(range[0])), BigDecimal.valueOf(Long.parseLong(range[1]))));
-            return "QuanLyDaQuy";
+            return "admin/QuanLyDaQuy";
         }
         return "redirect:/quan-ly/view-all";
     }
@@ -169,7 +175,9 @@ public class QuanLySanPhamController {
                 .moTa(moTa)
                 .build();
 
-        this.daQuyService.saveoOrUpdateProduct(daQuy);
+        redirectAttributes.addFlashAttribute("blankError", this.daQuyService.saveoOrUpdateProduct(daQuy)
+        );
+
         return "redirect:/quan-ly/view-all";
     }
 
@@ -203,7 +211,7 @@ public class QuanLySanPhamController {
                 .moTa(moTa)
                 .build();
 
-        this.daQuyService.saveoOrUpdateProduct(daQuy);
+        redirectAttributes.addFlashAttribute("blankError", this.daQuyService.saveoOrUpdateProduct(daQuy));
         return "redirect:/quan-ly/view-all";
     }
 }

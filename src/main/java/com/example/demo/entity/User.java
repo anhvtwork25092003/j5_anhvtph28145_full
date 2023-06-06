@@ -12,40 +12,34 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-    import org.hibernate.annotations.Generated;
-
-import java.math.BigDecimal;
 
 @Getter
 @Setter
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "daquy")
+@Table(name = "user")
 @Entity
 @Builder
-public class DaQuy {
+public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private int id;
-    @Generated
-    @Column(name = "ma")
-    private String ma;
+    @Column(name = "username")
+    private String username;
 
-    @Column(name = "ten")
-    private String ten;
+    @Column(name = "password")
+    private String password;
 
-    @Column(name = "soluong")
-    private int soLuong;
+    @Column(name = "fullname")
+    private String fullname;
 
-    @Column(name = "dongia")
-    private BigDecimal donGia;
 
-    @Column(name = "trongluong")
-    private Float trongLuong;
+    @Column(name = "email")
+    private String email;
 
-    @Column(name = "mota")
-    private String moTa;
 
+    @Column(name = "role")
+    private String role;
 }
