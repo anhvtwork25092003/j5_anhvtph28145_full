@@ -1,7 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 
 import com.example.demo.entity.CartItem;
+import com.example.demo.service.IShoppingCartService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
@@ -18,25 +19,25 @@ public class ShoppingCartService implements IShoppingCartService {
     // add cart
     @Override
     public void add(CartItem item) {
-        CartItem cartItem = maps.get(item.getMaSanPham());
+        CartItem cartItem = maps.get(item.getId());
         if (cartItem != null) {
             cartItem.setSoLuong(cartItem.getSoLuong() + 1);
 
         } else {
-            maps.put(item.getMaSanPham(), item);
+            maps.put(item.getId(), item);
 
         }
     }
 
     @Override
-    public void remove(int maSanPham) {
-        maps.remove(maSanPham);
+    public void remove(int id ) {
+        maps.remove(id);
     }
 
     // update cart
     @Override
-    public CartItem update(Integer maSanPham, int soLuongCapNhat) {
-        CartItem cartItem = maps.get(maSanPham);
+    public CartItem update(Integer id, int soLuongCapNhat) {
+        CartItem cartItem = maps.get(id);
         cartItem.setSoLuong(soLuongCapNhat);
         return cartItem;
     }

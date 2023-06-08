@@ -34,8 +34,6 @@ public class TrangChuController {
         }
         Page<DaQuy> pageSanPham;
         Pageable pageable = PageRequest.of(page - 1, 5);
-
-
         // hien thi tat ca
         if (keyword == null && priceRange == null) {
             model.addAttribute("pageDaQuy", this.daQuyService.getProducts(pageable));

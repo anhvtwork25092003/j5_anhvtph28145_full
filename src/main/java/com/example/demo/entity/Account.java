@@ -18,10 +18,10 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "user")
+@Table(name = "account")
 @Entity
 @Builder
-public class User {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +41,5 @@ public class User {
 
 
     @Column(name = "role")
-    private String role;
+    private int role;
 }

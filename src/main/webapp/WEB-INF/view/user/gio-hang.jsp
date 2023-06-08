@@ -25,7 +25,7 @@
         <tbody>
         <c:forEach items="${cart}" var="cartItem">
             <form action="/cart/update" method="post">
-                <input type="hidden" name="id" value="${cartItem.maSanPham}">
+                <input type="hidden" name="id" value="${cartItem.id}">
                 <tr>
                     <td>${cartItem.maSanPham}</td>
                     <td>${cartItem.tenSanPham}</td>
@@ -36,7 +36,7 @@
                     </td>
                     <td> ${cartItem.donGia*cartItem.soLuong}</td>
                     <td>
-                        <a href="/cart/del/${cartItem.maSanPham}" onclick="return confirm('Bạn xác nhận xóa chứ?')"
+                        <a href="/cart/del/${cartItem.id}" onclick="return confirm('Bạn xác nhận xóa chứ?')"
                            role="button"
                            class="btn btn-danger">Remove</a>
                     </td>
@@ -47,7 +47,7 @@
         </tbody>
     </table>
     <p>Tổng Tiền: ${total}</p>
-    <a href="/cart/clear" onclick="return confirm('Bạn xác nhận bo het hang trong gio  chứ?')"
+    <a href="/cart/thanh-toan" onclick="return confirm('Bạn xác nhận bo het hang trong gio  chứ?')"
        role="button"
        class="btn btn-danger">Thanh toán</a>
     <br>

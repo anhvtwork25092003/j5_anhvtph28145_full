@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.DaQuy;
+import com.example.demo.viewmodels.HangBanChay;
+import com.example.demo.viewmodels.HangTon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -25,4 +27,9 @@ public interface IDaQuyService {
     String deleteProduct(Integer id);
 
     long getDaQuyCount();
+
+    void capNhatSoLuongton(Integer id, int quantity);
+
+    Page<HangBanChay> findTopSellingProducts(Pageable pageable);
+    Page<HangTon> findTopHangTonNhieuNhat(Pageable pageable);
 }

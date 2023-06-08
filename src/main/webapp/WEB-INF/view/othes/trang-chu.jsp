@@ -27,7 +27,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <form action="/quan-ly/view-all" method="get">
+            <form action="/index" method="get">
                 <!-- Bộ lọc và tìm kiếm input -->
                 <div class="mb-3">
                     <label for="searchInput" class="form-label">Tìm kiếm theo tên:</label>

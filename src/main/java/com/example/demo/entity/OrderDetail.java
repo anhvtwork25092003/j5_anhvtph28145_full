@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @ToString
@@ -35,7 +37,7 @@ public class OrderDetail {
     private DaQuy daQuy;
 
     @Column(name = "dongia")
-    private float dongia;
+    private BigDecimal donGia;
 
     @Column(name = "soluong")
     private int soluong;

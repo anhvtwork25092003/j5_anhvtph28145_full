@@ -1,13 +1,17 @@
-package com.example.demo.service;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.DaQuy;
 import com.example.demo.repository.IDaQuyRepository;
+import com.example.demo.service.IDaQuyService;
+import com.example.demo.viewmodels.HangBanChay;
+import com.example.demo.viewmodels.HangTon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -63,5 +67,22 @@ public class DaQuyService implements IDaQuyService {
     @Override
     public long getDaQuyCount() {
         return this.daQuyRepository.count();
+    }
+
+
+    @Override
+    public void capNhatSoLuongton(Integer id, int quantity){
+         this.daQuyRepository.updateInventory(id, quantity);
+    }
+
+
+    @Override
+    public Page<HangBanChay> findTopSellingProducts(Pageable pageable){
+        return this.daQuyRepository.findTopSellingProducts(pageable);
+    }
+
+    @Override
+    public Page<HangTon> findTopHangTonNhieuNhat(Pageable pageable) {
+        return this.daQuyRepository.findTopHangTonNhieuNhat(pageable);
     }
 }
