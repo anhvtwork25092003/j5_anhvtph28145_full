@@ -20,9 +20,23 @@ public class AccountService implements IAccountService {
         return this.accountRepository.findById(accountId);
     }
 
-     @Override
-     public Account findByUsernameAndPassword(String username, String password){
+    @Override
+    public Account findByUsernameAndPassword(String username, String password) {
         return this.accountRepository.findByUsernameAndPassword(username, password);
-     };
+    }
+
+    ;
+
+    @Override
+    public Account addAccount(Account account) {
+        return this.accountRepository.save(account);
+    }
+
+    @Override
+    public Account findAccountByEmail(String email) {
+        return this.accountRepository.findAccountByEmail(email);
+    }
+
+    ;
 
 }

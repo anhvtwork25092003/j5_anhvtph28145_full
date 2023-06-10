@@ -11,6 +11,7 @@
 
 </head>
 <body>
+<jsp:include page="../admin/quan-ly.jsp" />
 <div class="container mt-3">
     <h2>Top 10 mat hang ban chay nhat</h2>
     <table class="table">

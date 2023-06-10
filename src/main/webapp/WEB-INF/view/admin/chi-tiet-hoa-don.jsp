@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<jsp:include page="../admin/quan-ly.jsp" />
 <div class="container">
 
     <table class="table">
@@ -30,7 +31,6 @@
                 <td>${order.donGia}</td>
                 <td>${order.soluong}</td>
                 <td>${order.soluong*order.donGia}</td>
-
             </tr>
         </c:forEach>
         </tbody>

@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
     <title>Thong ke</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
         // Tải thư viện Google Chart
         google.charts.load('current', {packages: ['corechart']});
@@ -45,10 +45,40 @@
         }
     </script>
 
+    <script>
+        google.charts.load('current', {packages: ['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
 
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Tên Sản phẩm');
+            data.addColumn('number', 'Số lượng tồn kho');
+            data.addRows([
+                <c:forEach items="${HangE.getContent()}" var="item">
+                ['${item.tenSanPham}', ${item.soLuongTonKho}],
+                </c:forEach>
+            ]);
+
+            var options = {
+                title: 'Top 10 mặt hàng tồn kho nhiều nhất',
+                chartArea: {width: '50%'},
+                hAxis: {
+                    title: 'Số lượng tồn kho',
+                    minValue: 0
+                },
+                vAxis: {
+                    title: 'Tên Sản phẩm'
+                }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById('chart_div2'));
+            chart.draw(data, options);
+        }
+    </script>
 
 </head>
 <body>
+<jsp:include page="../admin/quan-ly.jsp" />
 <div class="container mt-3">
     <h2>Top 10 mặt hàng bán chạy nhất</h2>
     <div class="row">

@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.Account;
 import com.example.demo.entity.DaQuy;
+import com.example.demo.service.IAccountService;
 import com.example.demo.service.IDaQuyService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,9 +23,12 @@ import java.math.BigDecimal;
 @Controller
 @RequestMapping("/quan-ly")
 public class QuanLySanPhamController {
-
+    @Autowired
+    IAccountService accountService;
     @Autowired
     IDaQuyService daQuyService;
+    @Autowired
+    private HttpSession session;
 
     // xoa san pham
     @GetMapping("/delete/{id}")
@@ -42,73 +48,86 @@ public class QuanLySanPhamController {
                                 @RequestParam(defaultValue = "1") int page,
                                 Model model
     ) {
-        //         cat lai cuoi range de lay min max
-        // phan trang
-        if (page < 1) {
-            page = 1;
-        }
-        Page<DaQuy> pageSanPham;
-        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        Account account = (Account) session.getAttribute("account");
+        if (account == null) {
+            return "redirect:/login";
+
+        } else {
+            if (account.getRole() == 0) {
+                // Người dùng đã đăng nhập
+                if (page < 1) {
+                    page = 1;
+                }
+                Page<DaQuy> pageSanPham;
+                Pageable pageable = PageRequest.of(page - 1, 5);
 
 
-        // hien thi tat ca
-        if (keyword == null && priceRange == null) {
-            model.addAttribute("pageDaQuy", this.daQuyService.getProducts(pageable));
-        } else if (keyword != null && priceRange != null) {
-            String[] range = priceRange.split(",");
-            String minPrice;
-            String maxPrice;
+                // hien thi tat ca
+                if (keyword == null && priceRange == null) {
+                    model.addAttribute("pageDaQuy", this.daQuyService.getProducts(pageable));
+                } else if (keyword != null && priceRange != null) {
+                    String[] range = priceRange.split(",");
+                    String minPrice;
+                    String maxPrice;
 
-            if (range.length == 1) {
-                minPrice = range[0];
-                maxPrice = "99999999999999999";
-            } else {
-                minPrice = range[0];
-                maxPrice = range[1];
-            }
+                    if (range.length == 1) {
+                        minPrice = range[0];
+                        maxPrice = "99999999999999999";
+                    } else {
+                        minPrice = range[0];
+                        maxPrice = range[1];
+                    }
 
-            if (minPrice.isEmpty()) {
-                minPrice = "0";
-            }
+                    if (minPrice.isEmpty()) {
+                        minPrice = "0";
+                    }
 
-            if (maxPrice.isEmpty()) {
-                maxPrice = "99999999999999999";
-            }
+                    if (maxPrice.isEmpty()) {
+                        maxPrice = "99999999999999999";
+                    }
 //             tim kiem theo ten va khoang gia
-            Page<DaQuy> ketQua =
-                    daQuyService.timKiemTheoTenVaKhoangGia(pageable, keyword, BigDecimal.valueOf(Long.parseLong(minPrice)), BigDecimal.valueOf(Long.parseLong(maxPrice)));
-            model.addAttribute("pageDaQuy", ketQua);
-        } else if (keyword != null && priceRange == null) {
+                    Page<DaQuy> ketQua =
+                            daQuyService.timKiemTheoTenVaKhoangGia(pageable, keyword, BigDecimal.valueOf(Long.parseLong(minPrice)), BigDecimal.valueOf(Long.parseLong(maxPrice)));
+                    model.addAttribute("pageDaQuy", ketQua);
+                } else if (keyword != null && priceRange == null) {
 //             tim kiem theo ten
-            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoTen(pageable, keyword));
-        } else if (keyword == null && priceRange != null) {
-            String[] range = priceRange.split(",");
-            String minPrice;
-            String maxPrice;
+                    model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoTen(pageable, keyword));
+                } else if (keyword == null && priceRange != null) {
+                    String[] range = priceRange.split(",");
+                    String minPrice;
+                    String maxPrice;
 
-            if (range.length == 1) {
-                minPrice = range[0];
-                maxPrice = "99999999999999999";
-            } else {
-                minPrice = range[0];
-                maxPrice = range[1];
-            }
+                    if (range.length == 1) {
+                        minPrice = range[0];
+                        maxPrice = "99999999999999999";
+                    } else {
+                        minPrice = range[0];
+                        maxPrice = range[1];
+                    }
 
-            if (minPrice.isEmpty()) {
-                minPrice = "0";
-            }
+                    if (minPrice.isEmpty()) {
+                        minPrice = "0";
+                    }
 
-            if (maxPrice.isEmpty()) {
-                maxPrice = "99999999999999999";
-            }
+                    if (maxPrice.isEmpty()) {
+                        maxPrice = "99999999999999999";
+                    }
 
 //             tim kiem theo khoang gia
-            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoKhoangGia(pageable, BigDecimal.valueOf(Long.parseLong(minPrice)), BigDecimal.valueOf(Long.parseLong(maxPrice))));
+                    model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoKhoangGia(pageable,
+                            BigDecimal.valueOf(Long.parseLong(minPrice)), BigDecimal.valueOf(Long.parseLong(maxPrice))));
+                }
 
+                return "admin/QuanLyDaQuy";
+            } else if (account.getRole() == 1) {
+                return "/index";
+            }
         }
-
-        return "admin/QuanLyDaQuy";
+        // Người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+        return "redirect:/login";
     }
+
 
     //     detail
     @GetMapping("/detail/{id}")
@@ -118,37 +137,6 @@ public class QuanLySanPhamController {
         return "admin/QuanLyDaQuy";
     }
 
-    //    tim kiem
-    @GetMapping("/tim-kiem")
-    public String timKiem(
-            @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String priceRange,
-            @RequestParam(defaultValue = "1") int page,
-            Model model
-    ) {
-        //         cat lai cuoi range de lay min max
-        String[] range = priceRange.split(",");
-        //             phan trang
-        Pageable pageable = PageRequest.of(page - 1, 5);
-        if (page < 1) page = 1;
-        if (keyword != null && priceRange != null) {
-            // Gọi hàm tìm kiếm theo tên và khoảng giá
-            Page<DaQuy> ketQua =
-                    daQuyService.timKiemTheoTenVaKhoangGia(pageable, keyword, BigDecimal.valueOf(Long.parseLong(range[0])), BigDecimal.valueOf(Long.parseLong(range[1])));
-            model.addAttribute("pageDaQuy", ketQua);
-            return "admin/QuanLyDaQuy";
-        } else if (keyword != null) {
-            // Gọi hàm tìm kiếm theo tên
-            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoTen(pageable, keyword));
-            return "admin/QuanLyDaQuy";
-
-        } else if (priceRange != null) {
-            // Gọi hàm tìm kiếm theo khoảng
-            model.addAttribute("pageDaQuy", this.daQuyService.timKiemTheoKhoangGia(pageable, BigDecimal.valueOf(Long.parseLong(range[0])), BigDecimal.valueOf(Long.parseLong(range[1]))));
-            return "admin/QuanLyDaQuy";
-        }
-        return "redirect:/quan-ly/view-all";
-    }
 
     // them moi san pham
     @PostMapping("/add")

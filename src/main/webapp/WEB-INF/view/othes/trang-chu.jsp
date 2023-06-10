@@ -1,3 +1,4 @@
+<%@ page import="com.example.demo.entity.Account" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
@@ -11,12 +12,34 @@
 </head>
 <body>
 <%-- header--%>
+<%--<header>--%>
+<%--    <div class="container-fluid">--%>
+<%--        <div class="row justify-content-end">--%>
+<%--            <div class="col-auto">--%>
+<%--                <a href="#">Đăng nhập</a> |--%>
+<%--                <a href="#">Đăng ký</a>--%>
+<%--                <a href="/cart" role="button" class="btn btn-primary">Giỏ hàng</a>--%>
+<%--            </div>--%>
+<%--        </div>--%>
+<%--    </div>--%>
+<%--</header>--%>
 <header>
     <div class="container-fluid">
         <div class="row justify-content-end">
             <div class="col-auto">
-                <a href="#">Đăng nhập</a> |
-                <a href="#">Đăng ký</a>
+                <% if (session.getAttribute("account") != null) {
+                    Account account = (Account) session.getAttribute("account");
+                    if (account.getRole() == 0) { %>
+                <a href="/quan-ly-chung">Quản Lý</a> |
+                <% } %>
+                <a href="/login/logout">Đăng xuất</a> |
+                <a href="/tai-khoan/update?id=<%= account.getId() %>">Thay đổi thông tin tài khoản</a> |
+                <a href="/doi-mat-khau">Đổi mật khẩu</a> |
+                <span>Xin chào, <%= account.getFullname() %></span> | <!-- Hiển thị tên người dùng -->
+                <% } else { %>
+                <a href="/login">Đăng nhập</a> |
+                <a href="/tai-khoan/dang-ki">Đăng ký</a>
+                <% } %>
                 <a href="/cart" role="button" class="btn btn-primary">Giỏ hàng</a>
             </div>
         </div>
@@ -98,7 +121,8 @@
                                 <a href="/quan-ly/detail/${lp.id}" role="button" class="btn btn-primary"
                                    data-bs-toggle="modal"
                                    data-bs-target="#myModal${status.index}">Detail</a>
-                                <a href="/cart/add/${lp.id}" role="button" class="btn btn-primary"> Them vao gio hang</a>
+                                <a href="/cart/add/${lp.id}" role="button" class="btn btn-primary"> Them vao gio
+                                    hang</a>
 
                             </td>
                         </tr>
@@ -142,8 +166,6 @@
                                             <label for="doSang">moTa:</label>
                                             <input type="text" id="doSang" name="moTa" value="${lp.moTa}" required><br>
 
-                                            <input type="submit" value="Update"
-                                                   onclick="return confirm('Xác nhận cập nhật?')">
                                         </form>
                                     </div>
                                     <!-- Modal footer -->

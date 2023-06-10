@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+<jsp:include page="../admin/quan-ly.jsp" />
 <div class="container mt-3">
     <h2>Danh sách hóa đơn</h2>
     <table class="table">

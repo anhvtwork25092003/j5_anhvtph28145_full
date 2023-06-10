@@ -10,6 +10,7 @@
 
     </head>
 <body class="container mt-3">
+<jsp:include page="../admin/quan-ly.jsp" />
 <div class="container">
     <div class="row">
         <div class="col-md-4">

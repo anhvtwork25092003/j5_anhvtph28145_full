@@ -20,6 +20,7 @@ public class CartItem {
     private String maSanPham;
     private String tenSanPham;
     private BigDecimal donGia;
+    private BigDecimal giaSauKhiGiam;
     private Integer soLuong;
 
     public BigDecimal getThanhTien() {

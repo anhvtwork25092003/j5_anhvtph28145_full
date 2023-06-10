@@ -44,4 +44,10 @@ public class LoginController {
             return "redirect:/login";
         }
     }
+
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate(); // Xóa toàn bộ thông tin lưu trữ trong session
+        return "redirect:/login"; // Chuyển hướng đến trang đăng nhập
+    }
 }

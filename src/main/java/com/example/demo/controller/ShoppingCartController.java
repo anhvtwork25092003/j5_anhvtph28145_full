@@ -11,6 +11,7 @@ import com.example.demo.service.IDaQuyService;
 import com.example.demo.service.IOrderDetailService;
 import com.example.demo.service.IOrderService;
 import com.example.demo.service.IShoppingCartService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +45,10 @@ public class ShoppingCartController {
 
     @Autowired
     IOrderDetailService orderDetailService;
+
+
+    @Autowired
+    private HttpSession session;
 
 
     // get date
@@ -105,46 +110,56 @@ public class ShoppingCartController {
 
     @GetMapping("/thanh-toan")
     public String thanhToan() {
-        // laays usser
-        Integer userId = 1;
 
-        Account account = this.accountService.getAccount(userId).get();
+        // check xem da dang nhap chua
 
+        Account accounta = (Account) session.getAttribute("account");
+        if (accounta != null) {
+            // Người dùng đã đăng nhập
 
-        // getdate
-        String currentDate = getCurrentDate("yyyy-MM-dd");
-        Order order = Order.builder()
-                .createDate(Date.valueOf(currentDate))
-                .account(account)
-                .build();
-
-        // insert order
-        Order order1 = orderService.save(order);
-        // insert orderdetail
-        Collection<CartItem> cartItems = shoppingCartService.getAll();
-        for (CartItem cartItem : cartItems) {
-            Integer productId = cartItem.getId();
-            Integer soLuongMua = cartItem.getSoLuong();
-            BigDecimal donGia = cartItem.getDonGia();
-
-            // Sử dụng các thông tin lấy được cho các mục đích khác
-            // Ví dụ: lưu vào cơ sở dữ liệu
-            // ...
-            OrderDetail orderDetail = OrderDetail.builder()
-                    .daQuy(this.daQuyService.getOneProduct(productId))
-                    .donGia(donGia)
-                    .soluong(soLuongMua)
-                    .order(order1)
+// laays usser
+            Account account = (Account) session.getAttribute("account");
+            Integer userId = account.getId();
+            // getdate
+            String currentDate = getCurrentDate("yyyy-MM-dd");
+            Order order = Order.builder()
+                    .createDate(Date.valueOf(currentDate))
+                    .account(account)
                     .build();
-            this.orderDetailService.save(orderDetail);
 
-            // giam so luong san pham ton kho
-            this.daQuyService.capNhatSoLuongton(productId,soLuongMua );
+            // insert order
+            Order order1 = orderService.save(order);
+            // insert orderdetail
+            Collection<CartItem> cartItems = shoppingCartService.getAll();
+            for (CartItem cartItem : cartItems) {
+                Integer productId = cartItem.getId();
+                Integer soLuongMua = cartItem.getSoLuong();
+                BigDecimal donGia = cartItem.getDonGia();
 
-            // sau khi thanh toan- xoa gio hang
-            this.shoppingCartService.clear();
+                // Sử dụng các thông tin lấy được cho các mục đích khác
+                // Ví dụ: lưu vào cơ sở dữ liệu
+                // ...
+                OrderDetail orderDetail = OrderDetail.builder()
+                        .daQuy(this.daQuyService.getOneProduct(productId))
+                        .donGia(donGia)
+                        .soluong(soLuongMua)
+                        .order(order1)
+                        .build();
+                this.orderDetailService.save(orderDetail);
+
+                // giam so luong san pham ton kho
+                this.daQuyService.capNhatSoLuongton(productId, soLuongMua);
+
+                // sau khi thanh toan- xoa gio hang
+                this.shoppingCartService.clear();
+            }
+
+            return "redirect:/index";
+        } else {
+            // Người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+            return "redirect:/login";
         }
 
-        return "redirect:/index";
+
     }
 }

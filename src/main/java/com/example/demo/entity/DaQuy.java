@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-    import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.Generated;
 
 import java.math.BigDecimal;
 
@@ -38,6 +38,9 @@ public class DaQuy {
 
     @Column(name = "soluong")
     private int soLuong;
+
+    @Column(name = "mucgiamgia")
+    private double mucGiamGia;
 
     @Column(name = "dongia")
     private BigDecimal donGia;
