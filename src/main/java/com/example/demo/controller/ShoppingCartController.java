@@ -90,6 +90,7 @@ public class ShoppingCartController {
         if (product != null) {
             CartItem cartItem = new CartItem();
             cartItem.setId(product.getId());
+            cartItem.setMucGiamGia(product.getMucGiamGia());
             cartItem.setMaSanPham(product.getMa());
             cartItem.setTenSanPham(product.getTen());
             cartItem.setDonGia(product.getDonGia());
@@ -110,15 +111,11 @@ public class ShoppingCartController {
 
     @GetMapping("/thanh-toan")
     public String thanhToan() {
-
         // check xem da dang nhap chua
-
-        Account accounta = (Account) session.getAttribute("account");
-        if (accounta != null) {
+        Account account = (Account) session.getAttribute("account");
+        if (account != null) {
             // Người dùng đã đăng nhập
-
-// laays usser
-            Account account = (Account) session.getAttribute("account");
+            // laays usser
             Integer userId = account.getId();
             // getdate
             String currentDate = getCurrentDate("yyyy-MM-dd");
@@ -126,15 +123,19 @@ public class ShoppingCartController {
                     .createDate(Date.valueOf(currentDate))
                     .account(account)
                     .build();
-
+            System.out.println("day chay den day roi 1");
             // insert order
             Order order1 = orderService.save(order);
             // insert orderdetail
+            System.out.println("day chay den day roi 2");
+
             Collection<CartItem> cartItems = shoppingCartService.getAll();
+            System.out.println("day chay den day roi 2");
+
             for (CartItem cartItem : cartItems) {
                 Integer productId = cartItem.getId();
                 Integer soLuongMua = cartItem.getSoLuong();
-                BigDecimal donGia = cartItem.getDonGia();
+                BigDecimal donGia = cartItem.getGiaSauKhiGiam();
 
                 // Sử dụng các thông tin lấy được cho các mục đích khác
                 // Ví dụ: lưu vào cơ sở dữ liệu
@@ -146,20 +147,15 @@ public class ShoppingCartController {
                         .order(order1)
                         .build();
                 this.orderDetailService.save(orderDetail);
-
                 // giam so luong san pham ton kho
                 this.daQuyService.capNhatSoLuongton(productId, soLuongMua);
-
-                // sau khi thanh toan- xoa gio hang
-                this.shoppingCartService.clear();
             }
-
+            // sau khi thanh toan- xoa gio hang
+            this.shoppingCartService.clear();
             return "redirect:/index";
         } else {
             // Người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
             return "redirect:/login";
         }
-
-
     }
 }

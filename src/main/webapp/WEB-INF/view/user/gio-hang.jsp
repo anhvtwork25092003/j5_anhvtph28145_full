@@ -29,12 +29,15 @@
                 <tr>
                     <td>${cartItem.maSanPham}</td>
                     <td>${cartItem.tenSanPham}</td>
-                    <td>${cartItem.donGia}</td>
                     <td>
                         <input name="qty" value="${cartItem.soLuong}"
                                onblur="this.form.submit()" style="width: 50px;">
                     </td>
-                    <td> ${cartItem.donGia*cartItem.soLuong}</td>
+                    <td> Giá gốc:${cartItem.donGia} <br>
+                         Giá Bán:${cartItem.getGiaSauKhiGiam()}
+                    </td>
+
+                    <td> ${cartItem.getThanhTien()}</td>
                     <td>
                         <a href="/cart/del/${cartItem.id}" onclick="return confirm('Bạn xác nhận xóa chứ?')"
                            role="button"

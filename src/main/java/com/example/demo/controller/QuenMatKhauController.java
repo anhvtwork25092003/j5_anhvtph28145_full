@@ -45,25 +45,6 @@ public class QuenMatKhauController {
     public String nhapMatKhauMoi() {
         return "/othes/dat-lai-mat-khau";
     }
-//
-//    @PostMapping
-//    public String guiCodequnMatKhau(@RequestParam("email") String email,
-//                                     RedirectAttributes redirectAttributes) {
-//        //         kiem tra email da dang ki tai khoan chua
-//        Account account = this.accountService.findAccountByEmail(email);
-//        if (account == null) {
-//            return "redirect:/quen-mat-khau";
-//        }
-//        Random random = new Random();
-//        int code = random.nextInt(900000) + 100000; // Tạo số ngẫu nhiên từ 100000 đến 999999
-//        // Gửi email chứa mã đến địa chỉ email
-//        SimpleMailMessage mailMessage = new SimpleMailMessage();
-//        mailMessage.setTo(email);
-//        mailMessage.setSubject("Mã xác nhận quên mật khẩu");
-//        mailMessage.setText("Mã xác nhận của bạn là: " + code);
-//        javaMailSender.send(mailMessage);
-//        return "redirect:/quen-mat-khau/xac-nhan";
-//    }
 
     // gui ma den email da duoc nhap
     @PostMapping("/gui-ma")

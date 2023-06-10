@@ -51,4 +51,11 @@ public class DaQuy {
     @Column(name = "mota")
     private String moTa;
 
+
+    public BigDecimal getGiaSauKhiGiam() {
+        BigDecimal mucGiamGiaDecimal = BigDecimal.valueOf(mucGiamGia);
+        BigDecimal giamGia = donGia.multiply(mucGiamGiaDecimal);
+        return donGia.subtract(giamGia);
+    }
+
 }

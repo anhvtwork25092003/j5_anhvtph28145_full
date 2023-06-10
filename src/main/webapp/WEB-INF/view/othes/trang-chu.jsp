@@ -105,17 +105,21 @@
                         <th>Tên</th>
                         <th>Số lượng đang có sẵn</th>
                         <th>Đơn giá</th>
+
                         <th>Trọng lượng</th>
                         <th>Actions</th>
                     </tr>
-                    </thead>
+
 
 
                     <c:forEach items="${pageDaQuy.getContent()}" var="lp" varStatus="status">
                         <tr>
                             <td>${lp.ten}</td>
                             <td>${lp.soLuong}</td>
-                            <td>${lp.donGia}</td>
+                            <td> Giá gốc:${lp.donGia}<br>
+                                Giá hiện tại: ${lp.getGiaSauKhiGiam()}<br>
+                                ( giảm ${lp.mucGiamGia * 100} (%))
+                            </td>
                             <td>${lp.trongLuong}</td>
                             <td>
                                 <a href="/quan-ly/detail/${lp.id}" role="button" class="btn btn-primary"

@@ -20,10 +20,20 @@ public class CartItem {
     private String maSanPham;
     private String tenSanPham;
     private BigDecimal donGia;
-    private BigDecimal giaSauKhiGiam;
+    private double mucGiamGia;
     private Integer soLuong;
 
+
+    public BigDecimal getGiaSauKhiGiam() {
+        BigDecimal mucGiamGiaDecimal = BigDecimal.valueOf(mucGiamGia);
+        BigDecimal giamGia = donGia.multiply(mucGiamGiaDecimal);
+        return donGia.subtract(giamGia);
+    }
+
+
     public BigDecimal getThanhTien() {
-        return donGia.multiply(BigDecimal.valueOf(soLuong));
+        BigDecimal giaSauKhiGiam = getGiaSauKhiGiam();
+        BigDecimal soLuongDecimal = BigDecimal.valueOf(soLuong);
+        return giaSauKhiGiam.multiply(soLuongDecimal);
     }
 }

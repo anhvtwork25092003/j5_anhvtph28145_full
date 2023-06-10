@@ -137,6 +137,17 @@ public class QuanLySanPhamController {
         return "admin/QuanLyDaQuy";
     }
 
+    @PostMapping("/khuyen-mai/{id}")
+    public String addkhuyenMai(Model model, @PathVariable("id") Integer id,
+                               @RequestParam("mucKhuyenMai") double mucKhuyenMai
+    ) {
+        double mucKhuyenMaiInput = mucKhuyenMai / 100;
+        DaQuy daQuy = this.daQuyService.getOneProduct(id);
+        daQuy.setMucGiamGia(mucKhuyenMaiInput);
+        this.daQuyService.saveoOrUpdateProduct(daQuy);
+        return "redirect:/quan-ly/view-all";
+    }
+
 
     // them moi san pham
     @PostMapping("/add")

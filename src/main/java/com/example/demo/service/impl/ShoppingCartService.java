@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.SessionScope;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,8 +65,12 @@ public class ShoppingCartService implements IShoppingCartService {
     //     get total money
     @Override
     public BigDecimal getAmount() {
-        return maps.values().stream()
-                .map(item -> new BigDecimal(item.getSoLuong()).multiply(item.getDonGia()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        Collection<CartItem> cartItems = new ArrayList<>(maps.values());
+        for (CartItem item : cartItems) {
+            BigDecimal itemTotal = item.getGiaSauKhiGiam().multiply(BigDecimal.valueOf(item.getSoLuong()));
+            totalAmount = totalAmount.add(itemTotal);
+        }
+        return totalAmount;
     }
 }
