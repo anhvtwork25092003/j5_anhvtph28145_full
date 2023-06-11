@@ -109,7 +109,7 @@
                         <th>Trọng lượng</th>
                         <th>Actions</th>
                     </tr>
-
+                    </thead>
 
 
                     <c:forEach items="${pageDaQuy.getContent()}" var="lp" varStatus="status">
